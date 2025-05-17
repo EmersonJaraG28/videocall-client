@@ -1,0 +1,7 @@
+# Ignorar un archivo específico
+package-lock.json
+.gitattributes
+.git
+
+# Ignorar una carpeta y su contenido
+example/

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Videollama</title>
+    <style>
+        .video-container {
+            display: flex;
+        }
+
+        video {
+            width: 50%;
+            border: 2px solid black;
+            margin: 20px;
+        }
+
+        #localVideo {
+            background-color: red;
+            width: 200px;
+            height: 200px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Videollama</h1>
+    <input type="text" id="channelName">
+    <button id="startBtn">start call</button>
+    <button id="leaveBtn">leave call</button>
+    <button id="toggleCameraBtn">toggle camera</button>
+    <button id="toggleMicBtn">toggle mic</button>
+    <div class="video-container" id="video-container">
+        <video id="localVideo" autoplay muted></video>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/socket.io-client/dist/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-peer/simplepeer.min.js"></script>
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>
