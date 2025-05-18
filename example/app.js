@@ -56,6 +56,11 @@ async function initDevices(userId, channelName) {
 
     SocketClient.on("user-published", handleUserPublished);
     SocketClient.on("user-unpublished", handleUserUnpublished);
+    SocketClient.on("user-media-toggled", (data) => {
+        const { userId, type, enabled } = data;
+        console.log("user-media-toggled", data);
+
+    });
 
     await SocketClient.createMediaStream();
     SocketClient.playVideoTrack('localVideo');

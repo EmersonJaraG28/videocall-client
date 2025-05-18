@@ -1,6 +1,6 @@
 {
   "name": "videocall-client-socket",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "scripts": {
@@ -9,11 +9,27 @@
   "keywords": [
     "video",
     "socket",
-    "peer"
+    "peer",
+    "webrtc",
+    "rtc",
+    "videocall",
+    "p2p",
+    "simple-peer"
   ],
-  "author": "Jara",
+  "author": {
+    "name": "Jara",
+    "url": "https://github.com/EmersonJaraG28"
+  },
   "license": "ISC",
-  "description": "",
+  "description": "WebRTC client for peer-to-peer video calls using socket.io and simple-peer.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EmersonJaraG28/videocall-client.git"
+  },
+  "bugs": {
+    "url": "https://github.com/EmersonJaraG28/videocall-client/issues"
+  },
+  "homepage": "https://github.com/EmersonJaraG28/videocall-client#readme",
   "dependencies": {
     "socket.io-client": "^4.8.1",
     "videocall-client": "file:",

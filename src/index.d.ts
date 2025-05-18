@@ -1,6 +1,6 @@
 declare module 'videocall-client-socket' {
 
-    export function setUrl(url: string): void;
+    export function setServerURL(url: string): void;
 
     export function on(event: string, callback: (data: any) => void): void;
     export function off(event: string, callback: (data: any) => void): void;
