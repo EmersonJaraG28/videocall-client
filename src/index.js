@@ -1,4 +1,6 @@
 
+import { io } from 'socket.io-client';
+
 var peers = {};
 
 var socket = null;

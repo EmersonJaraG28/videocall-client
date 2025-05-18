@@ -13,7 +13,7 @@ function regiterEvents() {
     const startBtn = document.getElementById('startBtn');
     const leaveBtn = document.getElementById('leaveBtn');
 
-    SocketClient.setUrl("https://node-videocall-server.onrender.com");
+    // SocketClient.setUrl("https://node-videocall-server.onrender.com");
 
 
 
