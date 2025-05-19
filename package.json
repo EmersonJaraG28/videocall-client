@@ -1,6 +1,6 @@
 {
   "name": "videocall-client-socket",
-  "version": "0.1.2",
+  "version": "0.1.6",
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "scripts": {
@@ -32,7 +32,6 @@
   "homepage": "https://github.com/EmersonJaraG28/videocall-client#readme",
   "dependencies": {
     "socket.io-client": "^4.8.1",
-    "videocall-client": "file:",
     "videocall-client-socket": "file:"
   }
 }

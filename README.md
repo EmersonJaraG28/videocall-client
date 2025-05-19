@@ -12,6 +12,16 @@ A simple WebRTC client library for peer-to-peer video calls using [simple-peer](
 npm install videocall-client-socket
 ```
 
+⚠️IMPORTANT!!!⚠️
+This package expects simple-peer to be loaded via CDN in your HTML.
+✅ Add this in your head:
+
+```bash
+<script src="https://cdn.jsdelivr.net/npm/simple-peer/simplepeer.min.js"></script>
+```
+
+This makes SimplePeer available globally in the browser.
+
 ---
 
 ## 🚀 Quick Start
@@ -21,11 +31,26 @@ import * as VideoClient from "videocall-client-socket";
 import { v4 as uuidv4 } from "uuid";
 
 const userId = uuidv4();
-const roomName = "roomABC";
+const channelName = "roomABC";
 
 // Step 1: Subscribe to events before anything else
-VideoClient.on("user-published", handleUserPublished);
-VideoClient.on("user-unpublished", handleUserUnpublished);
+VideoClient.on("user-published", (data) => {
+  const { user, mediaType } = data;
+  const video = document.createElement("video");
+  video.srcObject = user.videotrack;
+  video.autoplay = true;
+  video.id = user.uuid;
+  document.body.appendChild(video);
+});
+VideoClient.on("user-unpublished", (data) => {
+  const { user, mediaType } = data;
+  if (mediaType === "video") {
+    const video = document.getElementById(`${user.uuid}`);
+    if (video) {
+      video.remove();
+    }
+  }
+});
 VideoClient.on("user-media-toggled", (data) => {
   console.log(data.user.uuid, data.type, data.enabled);
 });
@@ -38,7 +63,7 @@ VideoClient.playVideoTrack("localVideo");
 
 // Step 4: Join the signaling channel
 VideoClient.setServerURL("http://localhost:3000");
-VideoClient.joinChannel(userId, roomName);
+VideoClient.joinChannel(userId, channelName);
 ```
 
 ---

@@ -1,5 +1,4 @@
 import { io } from 'socket.io-client';
-import SimplePeer from 'simple-peer';
 
 var peers = {};
 var socket = null;
