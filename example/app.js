@@ -62,10 +62,15 @@ async function initDevices(userId, channelName) {
 
     });
 
-    await SocketClient.createMediaStream();
-    SocketClient.playVideoTrack('localVideo');
+    SocketClient.createMediaStream().then(() => {
 
-    SocketClient.joinChannel(userId, channelName);
+        SocketClient.playVideoTrack('localVideo');
+        SocketClient.joinChannel(userId, channelName);
+
+    }).catch((err) => {
+        console.error(err);
+    });
+
 
 }
 

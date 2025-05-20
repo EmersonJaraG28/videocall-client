@@ -5,7 +5,7 @@ var socket = null;
 var mediastream = null;
 var localVideoId = "";
 var userId = "";
-var url = 'http://localhost:3000';
+var serverURL = 'http://localhost:3000';
 let events = {};
 
 /**
@@ -42,20 +42,39 @@ let emit = (_event, data) => {
  * @param {string} _url - Server URL (e.g. "http://localhost:3000").
  */
 export function setServerURL(_url) {
-    url = _url;
+    serverURL = _url;
 }
 
 /**
- * Requests access to the user's camera and microphone.
- * @returns {Promise<MediaStream>} - Resolves with a MediaStream containing audio and video.
+ * Requests access to both camera and microphone.
+ * Throws an error if either device is missing or denied.
+ * @returns {Promise<MediaStream>}
  */
 export function createMediaStream() {
-    return navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
-        mediastream = stream;
-        return stream;
-    });
-}
+    return new Promise((resolve, reject) => {
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+            const hasVideo = stream.getVideoTracks().length > 0;
+            const hasAudio = stream.getAudioTracks().length > 0;
 
+            if (!hasVideo || !hasAudio) {
+                stream.getTracks().forEach(track => track.stop()); // cleanup
+                throw new Error(
+                    !hasVideo && !hasAudio
+                        ? "Camera and microphone are not available."
+                        : !hasVideo
+                            ? "Camera is not available."
+                            : "Microphone is not available."
+                );
+            }
+
+            mediastream = stream;
+            resolve(mediastream);
+        }).catch((err) => {
+            reject("Camera and microphone are not available.");
+        });
+    });
+
+}
 /**
  * Plays the local video stream into a specified <video> element.
  * @param {string} _localVideoId - The ID of the <video> element in the DOM.
@@ -76,18 +95,20 @@ export function playVideoTrack(_localVideoId) {
 export function joinChannel(_userId, channelName) {
     userId = _userId;
 
-    socket = io(url, {
+    socket = io(serverURL, {
         query: { room: channelName, userId }
     });
 
     socket.on('all-users', users => {
-        users.forEach(({ userId: remoteUserId, socketId }) => {
+        users.forEach(({ userId: remoteUserId, socketId, }) => {
             const peer = createPeer(socket, mediastream, socketId, remoteUserId, true);
             peers[remoteUserId] = peer;
         });
     });
 
     socket.on('user-joined', ({ userId: newUserId, socketId: newSocketId }) => {
+        console.log("User joined", newUserId, newSocketId);
+
         const peer = createPeer(socket, mediastream, newSocketId, newUserId, false);
         peers[newUserId] = peer;
     });
@@ -118,6 +139,7 @@ export function joinChannel(_userId, channelName) {
             enabled
         });
     });
+
 }
 
 /**
@@ -173,6 +195,7 @@ function createPeer(socket, localStream, targetSocketId, remoteUserId, initiator
     });
 
     peer.on('stream', stream => {
+
         emit("user-published", {
             user: {
                 uuid: remoteUserId,
@@ -180,6 +203,15 @@ function createPeer(socket, localStream, targetSocketId, remoteUserId, initiator
             },
             mediaType: "video"
         });
+
+        setTimeout(() => {
+            socket.emit('initial-media-status', {
+                targetId: targetSocketId,
+                userId: userId,
+                audio: isAudioOn(),
+                video: isCameraOn()
+            });
+        }, 100);
     });
 
     peer.on('error', err => {

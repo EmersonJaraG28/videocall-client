@@ -1,4 +1,4 @@
-# 📞 videocall-client-socket
+# 📞 videocall-socket-client
 
 A simple WebRTC client library for peer-to-peer video calls using [simple-peer](https://www.npmjs.com/package/simple-peer) and [socket.io-client](https://www.npmjs.com/package/socket.io-client).
 
@@ -56,14 +56,20 @@ VideoClient.on("user-media-toggled", (data) => {
 });
 
 // Step 2: Create media stream
-await VideoClient.createMediaStream();
+SocketClient.createMediaStream()
+  .then(() => {
+    // Step 3: Play local stream in <video> tag
+    VideoClient.playVideoTrack("localVideo");
+    SocketClient.joinChannel(userId, channelName);
 
-// Step 3: Play local stream in <video> tag
-VideoClient.playVideoTrack("localVideo");
-
-// Step 4: Join the signaling channel
-VideoClient.setServerURL("http://localhost:3000");
-VideoClient.joinChannel(userId, channelName);
+    // Step 4: Join the signaling channel
+    //IMPORTANT: The service repository is located at the bottom.
+    VideoClient.setServerURL("http://localhost:3000");
+    VideoClient.joinChannel(userId, channelName);
+  })
+  .catch((err) => {
+    console.error(err);
+  });
 ```
 
 ---
